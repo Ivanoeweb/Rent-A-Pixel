@@ -16,17 +16,10 @@
             background-color: #f0f0f0;
             overflow: scroll;
         }
-        #canvas {
-            position: absolute;
-            width: 1000000px;
-            height: 1000000px;
+        canvas {
+            display: block;
             background-color: #d3d3d3;
             image-rendering: pixelated;
-        }
-        .numbering {
-            position: absolute;
-            font-size: 12px;
-            color: black;
         }
         #search-container {
             position: fixed;
@@ -36,6 +29,7 @@
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
         }
     </style>
 </head>
@@ -56,6 +50,10 @@
         let zoomLevel = 1;
         let selectedColor = "#ff0000";
 
+        // Configurar tamaño del canvas
+        canvas.width = 1000;
+        canvas.height = 1000;
+        
         document.getElementById("color-picker").addEventListener("input", (e) => {
             selectedColor = e.target.value;
         });
@@ -65,20 +63,26 @@
             const x = Math.floor((e.clientX - rect.left) / zoomLevel);
             const y = Math.floor((e.clientY - rect.top) / zoomLevel);
             ctx.fillStyle = selectedColor;
-            ctx.fillRect(x, y, 1, 1);
+            ctx.fillRect(x, y, 10, 10);
         });
 
         function drawGrid() {
             ctx.fillStyle = "#d3d3d3";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "#bbb";
+            for (let i = 0; i < canvas.width; i += 10) {
+                for (let j = 0; j < canvas.height; j += 10) {
+                    ctx.strokeRect(i, j, 10, 10);
+                }
+            }
         }
         drawGrid();
 
         function goToPixel() {
             let x = parseInt(document.getElementById("x-coord").value);
             let y = parseInt(document.getElementById("y-coord").value);
-            if (isNaN(x) || isNaN(y) || x < 0 || x > 1000000 || y < 0 || y > 1000000) {
-                alert("Por favor, ingresa coordenadas válidas entre 0 y 1,000,000.");
+            if (isNaN(x) || isNaN(y) || x < 0 || x > 1000 || y < 0 || y > 1000) {
+                alert("Por favor, ingresa coordenadas válidas entre 0 y 1,000.");
                 return;
             }
             container.scrollLeft = x * zoomLevel;
@@ -90,6 +94,7 @@
             let scaleFactor = event.deltaY > 0 ? 0.9 : 1.1;
             zoomLevel *= scaleFactor;
             canvas.style.transform = `scale(${zoomLevel})`;
+            canvas.style.transformOrigin = "top left";
         });
     </script>
 </body>
