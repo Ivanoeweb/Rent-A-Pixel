@@ -20,7 +20,7 @@
             position: absolute;
             width: 1000000px;
             height: 1000000px;
-            background-color: white;
+            background-color: #d3d3d3;
             image-rendering: pixelated;
         }
         .numbering {
@@ -44,6 +44,7 @@
         <input type="number" id="x-coord" placeholder="X" min="0" max="1000000">
         <input type="number" id="y-coord" placeholder="Y" min="0" max="1000000">
         <button onclick="goToPixel()">Buscar</button>
+        <input type="color" id="color-picker" value="#ff0000">
     </div>
     <div id="container">
         <canvas id="canvas"></canvas>
@@ -53,16 +54,23 @@
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
         let zoomLevel = 1;
+        let selectedColor = "#ff0000";
+
+        document.getElementById("color-picker").addEventListener("input", (e) => {
+            selectedColor = e.target.value;
+        });
+
+        canvas.addEventListener("click", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) / zoomLevel);
+            const y = Math.floor((e.clientY - rect.top) / zoomLevel);
+            ctx.fillStyle = selectedColor;
+            ctx.fillRect(x, y, 1, 1);
+        });
 
         function drawGrid() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "black";
-            ctx.font = `${10 * zoomLevel}px Arial`;
-            
-            for (let i = 0; i <= 1000000; i += 10000) {
-                ctx.fillText(i, i * zoomLevel, 10 * zoomLevel);
-                ctx.fillText(i, 10 * zoomLevel, i * zoomLevel);
-            }
+            ctx.fillStyle = "#d3d3d3";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         drawGrid();
 
@@ -82,7 +90,6 @@
             let scaleFactor = event.deltaY > 0 ? 0.9 : 1.1;
             zoomLevel *= scaleFactor;
             canvas.style.transform = `scale(${zoomLevel})`;
-            drawGrid();
         });
     </script>
 </body>
