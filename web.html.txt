@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lienzo de Píxeles</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f0f0f0;
+            overflow: scroll;
+        }
+        #canvas {
+            position: absolute;
+            width: 1000000px;
+            height: 1000000px;
+            background-color: white;
+            image-rendering: pixelated;
+        }
+        .numbering {
+            position: absolute;
+            font-size: 12px;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        function drawNumbers() {
+            ctx.fillStyle = "black";
+            ctx.font = "10px Arial";
+            
+            for (let i = 0; i <= 1000000; i += 10000) {
+                ctx.fillText(i, i, 10);
+                ctx.fillText(i, 10, i);
+            }
+        }
+        drawNumbers();
+    </script>
+</body>
+</html>
